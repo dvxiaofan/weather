@@ -8,12 +8,26 @@ const weatherMap = {
   'snow': '雪'
 }
 
+const weatherColorMap = {
+	'sunny': '#bbf0ff',
+	'cloudy': '#d6eff9',
+	'overcast': '#c2ced3',
+	'lightrain': '#b0d7e4',
+	'heavyrain': '#c1ccd1',
+	'snow': '#87e4ff'
+ }
+
 Page({
+	data: {
+		nowTemp: '',
+		nowWeather: '',
+		nowWeatherBg: ''
+	},
 	onLoad() {
 		wx.request({
 			url: 'https://test-miniprogram.com/api/weather/now',
 			data: {
-				city: 'guangzhou'
+				city: 'wuhan'
 			},
 			method: 'GET',
 			success: res => {
@@ -23,7 +37,13 @@ Page({
 				
 				this.setData({
 					nowTemp: `${temp}°`,
-					nowWeather: weatherMap[weather]
+					nowWeather: weatherMap[weather],
+					nowWeatherBg: `../../images/${weather}-bg.png`
+				})
+
+				wx.setNavigationBarColor({
+					frontColor: '#000000',
+					backgroundColor: weatherColorMap[weather]
 				})
 			}
 		})
