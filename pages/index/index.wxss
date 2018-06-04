@@ -28,3 +28,31 @@
   height: 100%;
   z-index: -1;
 }
+
+.futureWeather {
+  display: inline;
+}
+
+.futureIcon {
+  width: 22rpx;
+  height: 22rpx;
+}
+
+.timestips {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40rpx;
+}
+
+.timestips-icon {
+  margin-right: 10rpx;
+  width: 36rpx;
+  height: 28rpx;
+}
+
+.timestips-text {
+  font-size: 30rpx;
+  line-height: 42rpx;
+  opacity: .5;
+}
