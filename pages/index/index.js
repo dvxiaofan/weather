@@ -21,7 +21,8 @@ Page({
 	data: {
 		nowTemp: '',
 		nowWeather: '',
-		nowWeatherBg: ''
+		nowWeatherBg: '',
+		forecast: ['现在', '17时', '20时', '23时', '2时', '5时']
 	},
 	onPullDownRefresh() {
 		this.getNowData(() => {
