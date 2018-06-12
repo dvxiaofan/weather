@@ -100,5 +100,9 @@ Page({
 			todayTemp: `${result.today.minTemp}° - ${result.today.maxTemp}°`,
 			todayDate: `${date.getFullYear()} - ${date.getMonth() + 1} - ${date.getDate()} 今天`
 		})
+	},
+
+	onTapTodayWeather() {
+		wx.showToast();		
 	}
 })
