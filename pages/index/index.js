@@ -15,10 +15,15 @@ const weatherColorMap = {
 	'lightrain': '#b0d7e4',
 	'heavyrain': '#c1ccd1',
 	'snow': '#87e4ff'
- }
+}
+
+const QQMapWX = require('../../libs/qqmap-wx-jssdk.min.js');
+var qqmapsdk;
 
 Page({
 	data: {
+		city: '广州市',
+		locationTipsText: '点击获取当前城市',
 		nowTemp: '',
 		nowWeather: '',
 		nowWeatherBg: '',
@@ -34,14 +39,47 @@ Page({
 	},
 
 	onLoad() {
+		this.qqmapsdk = new QQMapWX({
+			key: '6M7BZ-43ORO-A7QW7-SA7B7-QEFX3-SJFYX'
+		}); 
+
 		this.getNowData();
+	},
+
+	// 获取当前城市
+	onTapLocation() {
+		wx.getLocation({
+			success: res => {
+				this.qqmapsdk.reverseGeocoder({
+					location: {
+						latitude: res.latitude,
+						longitude: res.longitude
+					},
+					success: res => {
+						let city = res.result.address_component.city;
+
+						this.setData({
+							city: city,
+							locationTipsText: ''
+						})
+
+						this.getNowData();
+
+					}
+				})
+			},
+			complete: () => {
+				// complete
+			}
+		})
+		
 	},
 
 	getNowData(callback) {
 		wx.request({
 			url: 'https://test-miniprogram.com/api/weather/now',
 			data: {
-				city: 'wuhan'
+				city: this.data.city
 			},
 			method: 'GET',
 			success: res => {
