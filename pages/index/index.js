@@ -22,7 +22,9 @@ Page({
 		nowTemp: '',
 		nowWeather: '',
 		nowWeatherBg: '',
-		hourlyWeather: []
+		hourlyWeather: [],
+		todayTemp: '',
+		todayDate: ''
 	},
 
 	onPullDownRefresh() {
@@ -44,10 +46,12 @@ Page({
 			method: 'GET',
 			success: res => {
 				let result = res.data.result;
-				
+				// 设置现在的气温
 				this.setNow(result);
-
+				// 未来24小时的天气
 				this.setHourWeather(result);
+				// 今天的最低和最高气温
+				this.setToday(result);
 			},
 			complete: () => {
 				callback && callback();
@@ -86,6 +90,15 @@ Page({
 
 		this.setData({
 			hourlyWeather: hourlyWeather
+		})
+	},
+
+	setToday(result) {
+		let date = new Date();
+
+		this.setData({
+			todayTemp: `${result.today.minTemp}° - ${result.today.maxTemp}°`,
+			todayDate: `${date.getFullYear()} - ${date.getMonth() + 1} - ${date.getDate()} 今天`
 		})
 	}
 })

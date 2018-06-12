@@ -29,6 +29,32 @@
   z-index: -1;
 }
 
+/* 今天的天气详情 */
+.day-weather {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  left: 40rpx;
+  right: 40rpx;
+  border-top: 1px solid rgba(0, 0, 0, .1);
+  height: 90rpx;
+  font-size: 30rpx;
+  line-height: 42rpx;
+  color: rgba(0, 0, 0, .5);
+}
+
+.temp-text {
+  flex-grow: 1;
+  padding-right: 30rpx;
+  text-align: right;
+}
+
+.arrow-icon {
+  width: 13rpx;
+  height: 24rpx;
+}
+
 .futureWeather {
   display: inline;
 }
@@ -87,4 +113,4 @@
   margin-top: 46rpx;
   font-size: 40rpx;
   line-height: 56rpx;
-}
+} 
