@@ -24,10 +24,6 @@ const UNPROMPTED = 0;
 const UNAUTHORIZED = 1;
 const AUTHORIZED = 2;
 
-const UNPROMPTED_TIPS = '点击获取当前城市';
-const UNAUTHORIZED_TIPS = '点击开启位置权限';
-const AUTHORIZED_TIPS = '';
-
 Page({
 	data: {
 		nowTemp: '',
@@ -37,23 +33,37 @@ Page({
 		todayTemp: '',
 		todayDate: '',
 		city: '北京市',
-		locationAuthType: UNPROMPTED,
-		locationTipsText: UNPROMPTED_TIPS
-		
-	},
-
-	onPullDownRefresh() {
-		this.getNowData(() => {
-			wx.stopPullDownRefresh();
-		});
+		locationAuthType: UNPROMPTED
 	},
 
 	onLoad() {
 		this.qqmapsdk = new QQMapWX({
 			key: '6M7BZ-43ORO-A7QW7-SA7B7-QEFX3-SJFYX'
 		}); 
+		wx.getSetting({
+			success: res => {
+				let auth = res.authSetting['scope.userLocation']
 
-		this.getNowData();
+				this.setData({
+					locationAuthType: auth? AUTHORIZED :
+						(auth === false)? UNAUTHORIZED : UNPROMPTED
+				})
+				if (auth) {
+					this.getCityAndWeather()		
+				} else {
+					this.getNowData()
+				}
+			},
+			fail: () => {
+				this.getNowData();
+			}
+		})
+	},
+
+	onPullDownRefresh() {
+		this.getNowData(() => {
+			wx.stopPullDownRefresh();
+		});
 	},
 
 	// 获取当前城市
@@ -63,11 +73,9 @@ Page({
 			wx.openSetting({
 				success: res => {
 					let auth = res.authSetting['scope.userLocation']
-
 					if (auth) {
 						this.getCityAndWeather();
 					}
-					
 				}
 			})
 		else 
@@ -79,8 +87,7 @@ Page({
 		wx.getLocation({
 			success: res => {
 				this.setData({
-					locationAuthType: AUTHORIZED,
-					locationTipsText: AUTHORIZED_TIPS
+					locationAuthType: AUTHORIZED
 				})
 				this.qqmapsdk.reverseGeocoder({
 					location: {
@@ -100,8 +107,7 @@ Page({
 			},
 			fail: () => {
 				this.setData({
-					locationAuthType: UNAUTHORIZED,
-					locationTipsText: UNAUTHORIZED_TIPS
+					locationAuthType: UNAUTHORIZED
 				})
 			}
 		})

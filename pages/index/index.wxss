@@ -27,6 +27,8 @@
   font-size: 30rpx;
   line-height: 42rpx;
   color: rgba(0, 0, 0, .5);
+  border: none !important;
+  padding: 0 !important;
 }
 
 .location {
