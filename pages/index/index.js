@@ -80,7 +80,6 @@ Page({
 			})
 		else 
 			this.getCityAndWeather()
-
 	},
 
 	getCityAndWeather() {
