@@ -55,31 +55,21 @@ Page({
 
 		this.getNowData();
 	},
-	onShow() {
-		wx.getSetting({
-			success: res => {
-				// 获取位置权限设置状态
-				let auth = res.authSetting['scope.userLocation']
-
-				if (auth && this.data.locationAuthType !== AUTHORIZED) {
-					// 权限从无到有
-					this.setData({
-						locationAuthType: AUTHORIZED,
-						locationTipsText: AUTHORIZED_TIPS
-					})
-					
-					this.getCityAndWeather();
-				}
-				
-			} 
-		})
-	},
 
 	// 获取当前城市
 	onTapLocation() {
 
 		if (this.data.locationAuthType === UNAUTHORIZED) 
-			wx.openSetting()
+			wx.openSetting({
+				success: res => {
+					let auth = res.authSetting['scope.userLocation']
+
+					if (auth) {
+						this.getCityAndWeather();
+					}
+					
+				}
+			})
 		else 
 			this.getCityAndWeather()
 
