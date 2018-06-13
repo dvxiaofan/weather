@@ -20,16 +20,26 @@ const weatherColorMap = {
 const QQMapWX = require('../../libs/qqmap-wx-jssdk.min.js');
 var qqmapsdk;
 
+const UNPROMPTED = 0;
+const UNAUTHORIZED = 1;
+const AUTHORIZED = 2;
+
+const UNPROMPTED_TIPS = '点击获取当前城市';
+const UNAUTHORIZED_TIPS = '点击开启位置权限';
+const AUTHORIZED_TIPS = '';
+
 Page({
 	data: {
-		city: '北京市',
-		locationTipsText: '点击获取当前城市',
 		nowTemp: '',
 		nowWeather: '',
 		nowWeatherBg: '',
 		hourlyWeather: [],
 		todayTemp: '',
-		todayDate: ''
+		todayDate: '',
+		city: '北京市',
+		locationAuthType: UNPROMPTED,
+		locationTipsText: UNPROMPTED_TIPS
+		
 	},
 
 	onPullDownRefresh() {
@@ -45,11 +55,43 @@ Page({
 
 		this.getNowData();
 	},
+	onShow() {
+		wx.getSetting({
+			success: res => {
+				// 获取位置权限设置状态
+				let auth = res.authSetting['scope.userLocation']
+
+				if (auth && this.data.locationAuthType !== AUTHORIZED) {
+					// 权限从无到有
+					this.setData({
+						locationAuthType: AUTHORIZED,
+						locationTipsText: AUTHORIZED_TIPS
+					})
+					
+					this.getCityAndWeather();
+				}
+				
+			} 
+		})
+	},
 
 	// 获取当前城市
 	onTapLocation() {
+
+		if (this.data.locationAuthType === UNAUTHORIZED) 
+			wx.openSetting()
+		else 
+			this.getCityAndWeather()
+
+	},
+
+	getCityAndWeather() {
 		wx.getLocation({
 			success: res => {
+				this.setData({
+					locationAuthType: AUTHORIZED,
+					locationTipsText: AUTHORIZED_TIPS
+				})
 				this.qqmapsdk.reverseGeocoder({
 					location: {
 						latitude: res.latitude,
@@ -62,17 +104,17 @@ Page({
 							city: city,
 							locationTipsText: ''
 						})
-
 						this.getNowData();
-
 					}
 				})
 			},
-			complete: () => {
-				// complete
+			fail: () => {
+				this.setData({
+					locationAuthType: UNAUTHORIZED,
+					locationTipsText: UNAUTHORIZED_TIPS
+				})
 			}
 		})
-		
 	},
 
 	getNowData(callback) {
@@ -143,16 +185,7 @@ Page({
 	onTapTodayWeather() {
 		wx.navigateTo({
 			// 传递city参数给第二个页面
-			url: '../list/list?city='+this.data.city,
-			success: function(res){
-				// success
-			},
-			fail: function() {
-				// fail
-			},
-			complete: function() {
-				// complete
-			}
+			url: '../list/list?city='+this.data.city
 		})		
 	}
 })
