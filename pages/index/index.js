@@ -22,7 +22,7 @@ var qqmapsdk;
 
 Page({
 	data: {
-		city: '广州市',
+		city: '北京市',
 		locationTipsText: '点击获取当前城市',
 		nowTemp: '',
 		nowWeather: '',
@@ -142,7 +142,8 @@ Page({
 
 	onTapTodayWeather() {
 		wx.navigateTo({
-			url: '../list/list',
+			// 传递city参数给第二个页面
+			url: '../list/list?city='+this.data.city,
 			success: function(res){
 				// success
 			},
